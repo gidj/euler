@@ -64,12 +64,9 @@ def main(argv):
 
     args = parser.parse_args()
 
-    sum_methods = {
-        'algebraic' : algebraic_sum,
-        'functional': functional_sum,
-        'imperative': imperative_sum,
-    }
-
+    sum_methods = { 'algebraic' : algebraic_sum,
+                    'functional': functional_sum,
+                    'imperative': imperative_sum, }
 
     f = sum_methods.get(args.method, algebraic_sum)
 
