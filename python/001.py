@@ -25,7 +25,7 @@ def imperative_sum(limit):
 
 def functional_sum(limit):
     ''' Using functional programming concepts '''
-    return sum( set(range(0, limit, 3)) | set(range(0, limit, 5)) )
+    return sum( set(xrange(0, limit, 3)) | set(xrange(0, limit, 5)) )
 
 def algebraic_sum(limit):
     ''' Calculates the sum by exploiting the fact that the sum of consecutive
@@ -33,9 +33,9 @@ def algebraic_sum(limit):
     def _sum_1_to_n(n):
         return (n * (n+1)) / 2
 
-    return ( 3 * _sum_1_to_n(limit/3)) + \
-           ( 5 * _sum_1_to_n(limit/5)) - \
-           (15 * _sum_1_to_n(limit/15))
+    return ( 3 * _sum_1_to_n((limit-1)/3)) + \
+           ( 5 * _sum_1_to_n((limit-1)/5)) - \
+           (15 * _sum_1_to_n((limit-1)/15))
 
 
 def main(argv):
@@ -43,15 +43,18 @@ def main(argv):
             "either 3 or 5 up to a limit"
     parser = argparse.ArgumentParser(description=description)
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("-i", "--imperative",
-            help="Use the imperative method",
-            action="store_true")
-    group.add_argument("-f", "--functional",
-            help="Use the functional method",
-            action="store_true")
     group.add_argument("-a", "--algebraic",
             help="Use the algebraic method",
-            action="store_true")
+            action="store_const", const="algebraic",
+            dest="method")
+    group.add_argument("-f", "--functional",
+            help="Use the functional method",
+            action="store_const", const="functional",
+            dest="method")
+    group.add_argument("-i", "--imperative",
+            help="Use the imperative method",
+            action="store_const", const="imperative",
+            dest="method")
     parser.add_argument("-l", "--limit",
             help="Indicate the upper limit of the list; defaults to 1000",
             type=int, default=1000)
@@ -61,7 +64,15 @@ def main(argv):
 
     args = parser.parse_args()
 
-    f = functional_sum if args.functional else imperative_sum
+    sum_methods = {
+        'algebraic' : algebraic_sum,
+        'functional': functional_sum,
+        'imperative': imperative_sum,
+    }
+
+
+    f = sum_methods.get(args.method, algebraic_sum)
+
     msg = "The total is {}" if args.verbose else "{}"
 
     print msg.format( f(args.limit) )
