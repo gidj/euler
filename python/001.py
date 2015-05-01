@@ -25,19 +25,18 @@ def imperative_sum(limit):
 
 def functional_sum(limit):
     ''' Using functional programming concepts '''
-    return sum( set( range(0, limit, 3) + range(0, limit, 5) ))
+    return sum( set(range(0, limit, 3)) | set(range(0, limit, 5)) )
 
 def algebraic_sum(limit):
     ''' Calculates the sum by exploiting the fact that the sum of consecutive
         integers 1 ... n equals 0.5 * n(n+1) '''
     def _sum_1_to_n(n):
-        return (0.5) * n * (n+1)
+        return (n * (n+1)) / 2
 
-    total = ( 3 * _sum_1_to_n(limit/3)) + \
-            ( 5 * _sum_1_to_n(limit/5)) - \
-            (15 * _sum_1_to_n(limit/15))
+    return ( 3 * _sum_1_to_n(limit/3)) + \
+           ( 5 * _sum_1_to_n(limit/5)) - \
+           (15 * _sum_1_to_n(limit/15))
 
-    return total
 
 def main(argv):
     description = "Calculate the sum of all numbers that are divisible by " \
