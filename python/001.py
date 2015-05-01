@@ -12,6 +12,7 @@ import sys
 import argparse
 
 def imperative_sum(limit):
+    ''' Straightforward sum calculation via loop and check '''
     def _divisible_by_3_or_5(num):
         return num % 3 == 0 or num % 5 == 0
 
@@ -23,8 +24,20 @@ def imperative_sum(limit):
     return total
 
 def functional_sum(limit):
-    return sum([ number for number in xrange(limit) \
-                 if number % 3 == 0 or number % 5 == 0 ])
+    ''' Using functional programming concepts '''
+    return sum( set( range(0, limit, 3) + range(0, limit, 5) ))
+
+def algebraic_sum(limit):
+    ''' Calculates the sum by exploiting the fact that the sum of consecutive
+        integers 1 ... n equals 0.5 * n(n+1) '''
+    def _sum_1_to_n(n):
+        return (0.5) * n * (n+1)
+
+    total = ( 3 * _sum_1_to_n(limit/3)) + \
+            ( 5 * _sum_1_to_n(limit/5)) - \
+            (15 * _sum_1_to_n(limit/15))
+
+    return total
 
 def main(argv):
     description = "Calculate the sum of all numbers that are divisible by " \
@@ -36,6 +49,9 @@ def main(argv):
             action="store_true")
     group.add_argument("-f", "--functional",
             help="Use the functional method",
+            action="store_true")
+    group.add_argument("-a", "--algebraic",
+            help="Use the algebraic method",
             action="store_true")
     parser.add_argument("-l", "--limit",
             help="Indicate the upper limit of the list; defaults to 1000",
