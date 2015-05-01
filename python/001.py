@@ -23,10 +23,8 @@ def imperative_sum(limit):
     return total
 
 def functional_sum(limit):
-    number_list = [ number for number in xrange(limit) \
-                    if number % 3 == 0 or number % 5 == 0 ]
-    total = sum(number_list)
-    return total
+    return sum([ number for number in xrange(limit) \
+                 if number % 3 == 0 or number % 5 == 0 ])
 
 def main(argv):
     description = "Calculate the sum of all numbers that are divisible by " \
