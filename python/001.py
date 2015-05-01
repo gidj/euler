@@ -11,7 +11,7 @@ Find the sum of all the multiples of 3 or 5 below 1000.
 import sys
 import argparse
 
-def iterative_version(limit):
+def imperative_sum(limit):
     def _divisible_by_3_or_5(num):
         return num % 3 == 0 or num % 5 == 0
 
@@ -22,8 +22,9 @@ def iterative_version(limit):
 
     return total
 
-def functional_version(limit):
-    number_list = [ number for number in xrange(limit) if number % 3 == 0 or number % 5 == 0 ]
+def functional_sum(limit):
+    number_list = [ number for number in xrange(limit) \
+                    if number % 3 == 0 or number % 5 == 0 ]
     total = sum(number_list)
     return total
 
@@ -31,16 +32,27 @@ def main(argv):
     description = "Calculate the sum of all numbers that are divisible by " \
             "either 3 or 5 up to a limit"
     parser = argparse.ArgumentParser(description=description)
-    parser.parse_args()
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-i", "--imperative",
+            help="Use the imperative method",
+            action="store_true")
+    group.add_argument("-f", "--functional",
+            help="Use the functional method",
+            action="store_true")
+    parser.add_argument("-l", "--limit",
+            help="Indicate the upper limit of the list; defaults to 1000",
+            type=int, default=1000)
+    parser.add_argument("-v", "--verbose",
+            help="Verbose mode",
+            action="store_true")
 
-    if len(argv) > 1:
-        LIMIT = int(argv[1])
-    else:
-        LIMIT = 1000
+    args = parser.parse_args()
 
-    total = iterative_version(LIMIT)
+    f = functional_sum if args.functional else imperative_sum
+    msg = "The total is {}" if args.verbose else "{}"
 
-    print "The total is {}".format(total)
+    print msg.format( f(args.limit) )
+
 
 if __name__ == "__main__":
     main(sys.argv)
