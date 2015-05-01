@@ -9,6 +9,7 @@ Find the sum of all the multiples of 3 or 5 below 1000.
 """
 
 import sys
+import argparse
 
 def iterative_version(limit):
     def _divisible_by_3_or_5(num):
@@ -27,6 +28,11 @@ def functional_version(limit):
     return total
 
 def main(argv):
+    description = "Calculate the sum of all numbers that are divisible by " \
+            "either 3 or 5 up to a limit"
+    parser = argparse.ArgumentParser(description=description)
+    parser.parse_args()
+
     if len(argv) > 1:
         LIMIT = int(argv[1])
     else:
