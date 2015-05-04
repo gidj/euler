@@ -11,3 +11,29 @@ terms. By starting with 1 and 2, the first 10 terms will be:
 By considering the terms in the Fibonacci sequence whose values do not exceed
 four million, find the sum of the even-valued terms.
 """
+
+import sys
+import argparse
+
+def generate_fibonacci_to_n(n):
+    a, b = 1, 1
+
+    while a < n:
+        yield a
+        a, b = b, a+b
+
+def main(argv):
+    description = "Return the sum of all even Fibonacci numbers up to a limit"
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument("-l", "--limit",
+            help="Indicate the uppermost Fibonnaci number; defaults to 4,000,000",
+            type=int, default=4000000)
+
+    args = parser.parse_args()
+
+    total = sum(filter(lambda x: x%2 == 0, generate_fibonacci_to_n(args.limit)))
+
+    print "{}".format(total)
+
+if __name__ == "__main__":
+    main(sys.argv)
