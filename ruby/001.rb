@@ -44,7 +44,19 @@ class FactorSum
   end
 
   def imperative_sum
+    total = 0
+    (0..@limit).each do |number|
+      is_divisible = false
+      @factors.each do |factor|
+        is_divisible &= number % factor
+      end
 
+      if is_divisible
+        total += number
+      end
+    end
+
+    total
   end
 
   def functional_sum
