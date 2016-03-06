@@ -52,6 +52,11 @@ class FactorSum
   end
 
   def functional_sum
+    require 'set'
+    three_set = Set.new (0..limit).step(3)
+    five_set = Set.new (0..limit).step(5)
+
+    three_set.merge(five_set).sum
   end
 
   def algebraic_sum
