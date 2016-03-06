@@ -5,22 +5,22 @@ class FactorSum
   attr_accessor :factors
 
   @factors = []
-  @highest = 0
+  @limit = 0
   @sum = nil
 
   class << self
     def imperative
-      new(factors, highest, 'imperative')
+      new(factors, limit, 'imperative')
     end
     def functional
-      new(factors, highest, 'functional')
+      new(factors, limit, 'functional')
     end
     def algebraic
-      new(factors, highest, 'algebraic')
+      new(factors, limit, 'algebraic')
     end
   end
 
-  def initizialize (factors = 3, highest = 1000, algorithm = 'imperative')
+  def initizialize (factors = 3, limit = 1000, algorithm = 'imperative')
     if factors.nil?
       raise Error
     elsif factors.respond_to?(:each)
@@ -31,12 +31,12 @@ class FactorSum
       @factors << factors
     end
 
-    if highest.nil?
+    if limit.nil?
       raise Error
     elsif higest.respond_to?(:each)
       raise Error
     else
-      @highest = highest
+      @limit = limit
     end
 
     case algorithm
@@ -53,10 +53,13 @@ class FactorSum
 
   def functional_sum
     require 'set'
-    three_set = Set.new (0..limit).step(3)
-    five_set = Set.new (0..limit).step(5)
+    multiples_set = Set.new
 
-    three_set.merge(five_set).sum
+    @factors.each do |factor|
+      mutiples_set.merge((0..@limit).step(factor))
+    end
+
+    multiples_set.sum
   end
 
   def algebraic_sum
