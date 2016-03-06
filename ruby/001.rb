@@ -4,10 +4,6 @@
 class FactorSum
   attr_accessor :factors
 
-  @factors = []
-  @limit = 0
-  @sum = nil
-
   class << self
     def imperative
       new(factors, limit, 'imperative')
@@ -48,7 +44,7 @@ class FactorSum
   end
 
   def imperative_sum
-    total = 0
+
   end
 
   def functional_sum
