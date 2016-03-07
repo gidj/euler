@@ -19,10 +19,26 @@ class FactorSum
 
   def initialize(factors, limit, algorithm)
     @factors = []
-    if factors.respond_to?(:each)
-      factors.each do |factor|
-        @factors << factor
+
+    is_prime = lambda do |integer|
+
+    end
+    prime_factorization = lambda do |integer|
+      factor_limit = Math.sqrt(integer).to_i
+      prime_list = (2..factor_limit).to_a.select {|x| is_prime.call(x)}
+      prime_factors = []
+      prime_list.each do |x|
+        if integer % x === 0
+          prime_factors << x
+        end
       end
+      return prime_factors
+    end
+
+    if factors.nil?
+      raise Error
+    elsif factors.respond_to?(:each)
+      @factors = Set.new(factors.map(prime_factorization).flatten).to_a
     else
       @factors << factors
     end
@@ -45,7 +61,7 @@ class FactorSum
 
   def imperative_sum
     total = 0
-    (0..@limit).each do |number|
+    (0..(@limit-1)).each do |number|
       is_divisible = false
       @factors.each do |factor|
         is_divisible |= number % factor === 0
@@ -63,7 +79,7 @@ class FactorSum
     multiples_set = Set.new
 
     @factors.each do |factor|
-      multiples_set.merge((0..@limit).step(factor))
+      multiples_set.merge((0..(@limit-1)).step(factor))
     end
 
     multiples_set.to_a.reduce(0, :+)
@@ -71,14 +87,21 @@ class FactorSum
 
   def algebraic_sum
     factor_sum_array = []
+
+    step_sum_to_limit = lambda do |n|
+      low_limit = (@limit-1)/n
+      n * (low_limit*(low_limit+1)) / 2
+    end
+
     @factors.each do |factor|
-      factor_sum_array << (factor * (factor + 1)) / 2
+      factor_sum_array << step_sum_to_limit.call(factor)
     end
 
     overcount_array = []
     (2..@factors.length).each do |number|
       @factors.combination(number).each do |combination|
-        overcount_array << (combination.length-1) * combination.reduce(1, :*)
+        overcount_factor = combination.reduce(1, :*)
+        overcount_array << (combination.length-1) * step_sum_to_limit.call(overcount_factor)
       end
     end
 
