@@ -1,25 +1,25 @@
 #!/usr/local/bin/ruby
-
+require 'set'
 
 class FactorSum
-  attr_accessor :factors
+  attr_accessor :sum, :factors
 
   class << self
-    def imperative
-      new(factors, limit, 'imperative')
+    private :new
+    def imperative(*args)
+      new(*args, 'imperative')
     end
-    def functional
-      new(factors, limit, 'functional')
+    def functional(*args)
+      new(*args, 'functional')
     end
-    def algebraic
-      new(factors, limit, 'algebraic')
+    def algebraic(*args)
+      new(*args, 'algebraic')
     end
   end
 
-  def initizialize (factors = 3, limit = 1000, algorithm = 'imperative')
-    if factors.nil?
-      raise Error
-    elsif factors.respond_to?(:each)
+  def initialize(factors, limit, algorithm)
+    @factors = []
+    if factors.respond_to?(:each)
       factors.each do |factor|
         @factors << factor
       end
@@ -29,16 +29,16 @@ class FactorSum
 
     if limit.nil?
       raise Error
-    elsif higest.respond_to?(:each)
+    elsif limit.respond_to?(:each)
       raise Error
     else
       @limit = limit
     end
 
     case algorithm
-    when 'imperative' then @sum = imperative_sum
-    when 'functional' then @sum = functional_sum
-    when 'algebraic' then @sum = algebraic_sum
+    when 'imperative' then @sum = self.imperative_sum
+    when 'functional' then @sum = self.functional_sum
+    when 'algebraic' then @sum = self.algebraic_sum
     else @sum = algebraic_sum
     end
   end
@@ -48,7 +48,7 @@ class FactorSum
     (0..@limit).each do |number|
       is_divisible = false
       @factors.each do |factor|
-        is_divisible &= number % factor
+        is_divisible |= number % factor === 0
       end
 
       if is_divisible
@@ -60,18 +60,30 @@ class FactorSum
   end
 
   def functional_sum
-    require 'set'
     multiples_set = Set.new
 
     @factors.each do |factor|
-      mutiples_set.merge((0..@limit).step(factor))
+      multiples_set.merge((0..@limit).step(factor))
     end
 
-    multiples_set.sum
+    multiples_set.to_a.reduce(0, :+)
   end
 
   def algebraic_sum
+    factor_sum_array = []
+    @factors.each do |factor|
+      factor_sum_array << (factor * (factor + 1)) / 2
+    end
+
+    overcount_array = []
+    (2..@factors.length).each do |number|
+      @factors.combination(number).each do |combination|
+        overcount_array << (combination.length-1) * combination.reduce(1, :*)
+      end
+    end
+
+    return factor_sum_array.reduce(0, :+) - overcount_array.reduce(0, :+)
   end
 
-  private :new, :imperative_sum, :functional_sum, :algebraic_sum
+  # private :imperative_sum, :functional_sum, :algebraic_sum
 end
