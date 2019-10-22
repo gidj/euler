@@ -16,7 +16,7 @@ def _factor_generator(number: int) -> Generator:
 
 
 def main():
-    _number = 13195
+    _number = 600851475143
     _generator = _factor_generator(_number)
     return list(_generator)[-1]
 
